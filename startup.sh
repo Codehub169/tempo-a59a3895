@@ -31,6 +31,7 @@ echo "Activated Python virtual environment."
 # Upgrade pip and install dependencies
 echo "Installing backend dependencies from requirements.txt..."
 pip install --upgrade pip
+# requirements.txt is in the project root ($SCRIPT_DIR)
 pip install -r "$SCRIPT_DIR/requirements.txt"
 echo "Backend dependencies installed."
 
@@ -46,7 +47,8 @@ cd "$SCRIPT_DIR" # Back to project root
 # --- Frontend Setup ---
 echo "
 [2/4] Setting up frontend..."
-cd "$SCRIPT_DIR/frontend"
+# package.json is located in the project root ($SCRIPT_DIR)
+# The previous 'cd "$SCRIPT_DIR"' ensures we are in the correct directory.
 
 if [ -d "node_modules" ]; then
   echo "Frontend dependencies (node_modules) already exist. Skipping npm install."
@@ -60,7 +62,7 @@ fi
 echo "Building frontend application (npm run build)..."
 npm run build
 echo "Frontend application built."
-cd "$SCRIPT_DIR" # Back to project root
+# cd "$SCRIPT_DIR" # Already in SCRIPT_DIR, not strictly necessary but ensures CWD
 
 # --- Final Checks (Placeholder) ---
 echo "
@@ -78,13 +80,17 @@ cd "$SCRIPT_DIR/backend"
 source venv/bin/activate
 
 # Start FastAPI server
-# The backend/main.py is expected to be configured to serve static files 
-# from ../frontend/build and its API on port 9000.
+# The backend/main.py is configured to serve static files 
+# from ../build (relative to backend/main.py, i.e., $SCRIPT_DIR/build) and its API on port 9000.
 echo "Starting FastAPI server on http://0.0.0.0:9000"
 echo "The application should be accessible at http://localhost:9000"
 
 uvicorn main:app --host 0.0.0.0 --port 9000 --reload
 
 # Deactivate virtual environment on exit (though script might be terminated before this)
-deactivate
+# This command might not be reached if uvicorn is terminated with Ctrl+C.
+# Consider trap for cleanup if robust deactivation is critical.
+if type deactivate > /dev/null 2>&1; then
+  deactivate
+fi
 echo "Application stopped."
