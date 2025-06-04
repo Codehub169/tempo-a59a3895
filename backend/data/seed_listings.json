@@ -1,0 +1,80 @@
+[
+  {
+    "id": 1,
+    "title": "Charming Canal View Apartment",
+    "location": "Amsterdam Centrum",
+    "images": [
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YXBhcnRtZW50JTIwaW50ZXJpb3J8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjJ8fGFwYXJ0bWVudCUyMGludGVyaW9yJTIwbGl2aW5nJTIwcm9vbXxlbnwwfHwwfHx8MA%3D&auto=format&fit=crop&w=400&q=80",
+      "https://images.unsplash.com/photo-1616046229478-9901c5536a45?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTF8fGFwYXJ0bWVudCUyMGludGVyaW9yJTIwYmVkcm9vbXxlbnwwfHwwfHx8MA%3D&auto=format&fit=crop&w=400&q=80"
+    ],
+    "advertised_rent": 1850,
+    "size": 75,
+    "rooms": 2,
+    "description": "Experience the charm of Amsterdam in this beautifully renovated 2-room apartment with stunning canal views. Located in the heart of the city, you're steps away from shops, restaurants, and cultural attractions. The apartment features a modern kitchen, a bright living space, and a comfortable bedroom. Perfect for a single professional or a couple.",
+    "amenities": [
+      { "name": "Canal View", "icon": "fas fa-water" },
+      { "name": "Modern Kitchen", "icon": "fas fa-utensils" },
+      { "name": "Wi-Fi Included", "icon": "fas fa-wifi" },
+      { "name": "Washer", "icon": "fas fa-tshirt" },
+      { "name": "Central Heating", "icon": "fas fa-thermometer-half" },
+      { "name": "Furnished", "icon": "fas fa-couch" }
+    ],
+    "wws_input_data": {
+      "surface_area": 75,
+      "energy_label": "B",
+      "woz_value": 450000,
+      "room_count": 2
+    }
+  },
+  {
+    "id": 2,
+    "title": "Modern Loft in De Pijp",
+    "location": "Amsterdam De Pijp",
+    "images": [
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8YXBhcnRtZW50JTIwaW50ZXJpb3J8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8bW9kZXJuJTIwYXBhcnRtZW50JTIwaW50ZXJpb3J8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=400&q=80",
+      "https://images.unsplash.com/photo-1505691938895-1758d7feb511?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8YmVkcm9vbSUyMGludGVyaW9yfGVufDB8fDB8fHww&auto=format&fit=crop&w=400&q=80"
+    ],
+    "advertised_rent": 2200,
+    "size": 90,
+    "rooms": 3,
+    "description": "Spacious and stylish loft apartment in the vibrant De Pijp district. This 3-room apartment boasts high ceilings, large windows offering plenty of natural light, and a contemporary design. Features an open-plan living area, fully equipped kitchen, two well-sized bedrooms, and a modern bathroom. Includes a lovely balcony overlooking the street. Ideal for those seeking a trendy urban lifestyle.",
+    "amenities": [
+      { "name": "Balcony", "icon": "fas fa-wind" },
+      { "name": "Dishwasher", "icon": "fas fa-soap" },
+      { "name": "High Ceilings", "icon": "fas fa-arrows-alt-v" },
+      { "name": "Open Kitchen", "icon": "fas fa-concierge-bell" },
+      { "name": "Wooden Floors", "icon": "fas fa-layer-group" }
+    ],
+    "wws_input_data": {
+      "surface_area": 90,
+      "energy_label": "A",
+      "woz_value": 550000,
+      "room_count": 3
+    }
+  },
+  {
+    "id": 3,
+    "title": "Spacious Family Home",
+    "location": "Utrecht Oost",
+    "images": [
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGFwYXJ0bWVudCUyMGV4dGVyaW9yfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=80"
+    ],
+    "advertised_rent": 2400,
+    "size": 120,
+    "rooms": 4,
+    "description": "A wonderful family home in a quiet, green neighborhood of Utrecht. Features a large living room, separate dining area, modern kitchen, three bedrooms, a study, and a garden. Perfect for families looking for space and comfort. Close to schools, parks, and public transport.",
+    "amenities": [
+      { "name": "Garden", "icon": "fas fa-tree" },
+      { "name": "Family Friendly", "icon": "fas fa-child" },
+      { "name": "Study Room", "icon": "fas fa-book-reader" }
+    ],
+    "wws_input_data": {
+      "surface_area": 120,
+      "energy_label": "A+",
+      "woz_value": 600000,
+      "room_count": 4
+    }
+  }
+]
