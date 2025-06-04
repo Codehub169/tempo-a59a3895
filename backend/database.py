@@ -5,7 +5,12 @@ from typing import List, Optional, Any # Any for JSON type hint
 import os
 
 DATABASE_FILE_PATH = os.path.join(os.path.dirname(__file__), "data", "listings.db")
-DATABASE_URL = f"sqlite:///./{DATABASE_FILE_PATH}"
+# Corrected DATABASE_URL to correctly use an absolute path for the SQLite database file.
+# Change `f"sqlite:///./{DATABASE_FILE_PATH}"` to `f"sqlite:///{DATABASE_FILE_PATH}"`.
+# This assumes `DATABASE_FILE_PATH` is an absolute path (e.g., "/var/data/app.db" or a variable evaluating to such).
+# This correction ensures that the path is interpreted as an absolute path by SQLite (e.g. `sqlite:////var/data/app.db`),
+# resolving the 'unable to open database file' error.
+DATABASE_URL = f"sqlite:///{DATABASE_FILE_PATH}"
 
 # Ensure the data directory exists
 os.makedirs(os.path.join(os.path.dirname(__file__), "data"), exist_ok=True)
