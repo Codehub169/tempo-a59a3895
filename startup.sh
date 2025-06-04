@@ -36,7 +36,9 @@ echo "Backend dependencies installed."
 
 # Seed the database
 echo "Seeding database..."
-python seed_db.py
+# Run seed_db.py as a module from the project root directory ($SCRIPT_DIR)
+# The (cd ... && ...) runs the command in a subshell, so the CWD of this script doesn't change here.
+(cd "$SCRIPT_DIR" && python -m backend.seed_db)
 echo "Database seeded."
 
 cd "$SCRIPT_DIR" # Back to project root
