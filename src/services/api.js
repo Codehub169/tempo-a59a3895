@@ -1,13 +1,13 @@
 import axios from 'axios';
 
 // Determine the base URL based on the environment
-// For development, React typically runs on port 3000 and the backend on 8000 (or as configured).
+// For development, React typically runs on port 3000 and the backend on 9000 (as configured in startup.sh).
 // For production, both might be served from the same origin or a configured API URL.
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:9000/api';
 
 /**
  * Fetches all listings from the backend.
- * @returns {Promise<Array>} A promise that resolves to an array of listing objects.
+ * @returns {Promise<Array<Object>>} A promise that resolves to an array of listing objects.
  */
 export const getListings = async () => {
   try {
@@ -28,6 +28,10 @@ export const getListings = async () => {
  * @returns {Promise<Object>} A promise that resolves to a single listing object.
  */
 export const getListingById = async (id) => {
+  if (!id) {
+    console.error('Error: Listing ID is required.');
+    throw new Error('Listing ID is required.');
+  }
   try {
     const response = await axios.get(`${API_BASE_URL}/listings/${id}`);
     return response.data;
