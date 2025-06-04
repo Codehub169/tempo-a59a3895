@@ -34,7 +34,7 @@ const listingsData = {
             { name: "Furnished", icon: faCouch }
         ],
         wwsBreakdown: [
-            { item: "Surface Area (75 m²)", points: 60 },
+            { item: "Surface Area (75 m&sup2;)", points: 60 },
             { item: "Energy Label (B)", points: 25 },
             { item: "Kitchen Amenities", points: 15 },
             { item: "Bathroom Standard", points: 10 },
@@ -65,7 +65,7 @@ const listingsData = {
             { name: "Wooden Floors", icon: faLayerGroup } 
         ],
         wwsBreakdown: [
-            { item: "Surface Area (90 m²)", points: 75 },
+            { item: "Surface Area (90 m&sup2;)", points: 75 },
             { item: "Energy Label (A)", points: 35 },
             { item: "Kitchen Deluxe", points: 20 },
             { item: "Luxury Bathroom", points: 15 },
@@ -95,7 +95,7 @@ const listingsData = {
             { name: "Quiet Area", icon: faLeaf }
         ],
         wwsBreakdown: [
-            { item: "Surface Area (120 m²)", points: 90 },
+            { item: "Surface Area (120 m&sup2;)", points: 90 },
             { item: "Energy Label (A+)", points: 40 },
             { item: "Full Kitchen & Bath", points: 20 },
             { item: "WOZ Value (Utrecht)", points: 15 },
@@ -125,7 +125,7 @@ const listingsData = {
             { name: "Furnished", icon: faCouch }
         ],
         wwsBreakdown: [
-            { item: "Surface Area (45 m²)", points: 40 },
+            { item: "Surface Area (45 m&sup2;)", points: 40 },
             { item: "Energy Label (C)", points: 20 },
             { item: "Kitchenette", points: 10 },
             { item: "Bathroom Standard", points: 10 },
@@ -156,7 +156,7 @@ const listingsData = {
             { name: "Storage", icon: faArchive }
         ],
         wwsBreakdown: [
-            { item: "Surface Area (80 m²)", points: 65 },
+            { item: "Surface Area (80 m&sup2;)", points: 65 },
             { item: "Energy Label (C)", points: 20 },
             { item: "Sanitary Facilities", points: 12 },
             { item: "Kitchen Standard", points: 13 },
@@ -179,25 +179,25 @@ const ListingDetailPage = () => {
     }, [id]);
 
     if (!listing) {
-        return <div className="container py-10 text-center">Loading listing details...</div>;
+        return <div className="container py-10 text-center mx-auto">Loading listing details...</div>;
     }
 
     let rentDifference = listing.advertisedRent - listing.maxLegalRent;
     let comparisonClass = '';
     let comparisonText = '';
-    const liberalisationThresholdRent = 879.66; // Example for 2024
+    // const liberalisationThresholdRent = 879.66; // Example for 2024, currently unused in logic
     const liberalisationPointsThreshold = 136; // Example for 2024
 
     if (listing.wwsPoints >= liberalisationPointsThreshold) {
         comparisonClass = 'neutral';
-        comparisonText = `Likely in liberalized sector (WWS points: ${listing.wwsPoints} ≥ ${liberalisationPointsThreshold}). Max legal rent is indicative.`;
+        comparisonText = `Likely in liberalized sector (WWS points: ${listing.wwsPoints} &ge; ${liberalisationPointsThreshold}). Max legal rent is indicative.`;
     } 
     else if (listing.advertisedRent > listing.maxLegalRent) {
          comparisonClass = 'overpriced';
-         comparisonText = `This is €${rentDifference.toFixed(2)} above the max legal rent.`;
+         comparisonText = `This is &#8364;${rentDifference.toFixed(2)} above the max legal rent.`;
     } else if (listing.advertisedRent < listing.maxLegalRent) {
         comparisonClass = 'fair';
-        comparisonText = `This is €${Math.abs(rentDifference).toFixed(2)} below the max legal rent. Good deal!`;
+        comparisonText = `This is &#8364;${Math.abs(rentDifference).toFixed(2)} below the max legal rent. Good deal!`;
     } else { 
         comparisonClass = 'fair';
         comparisonText = `Priced exactly at the max legal rent.`;
@@ -236,11 +236,11 @@ const ListingDetailPage = () => {
                 <div className="listing-title-bar mb-6">
                     <h1 className="font-secondary text-3xl md:text-4xl font-bold text-text-dark mb-1">{listing.title}</h1>
                     <p className="location text-lg text-text-light flex items-center">
-                        <FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2 text-primary-color" /> {listing.location}
+                        <FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2 text-primary" /> {listing.location}
                     </p>
                 </div>
 
-                <div className="listing-gallery mb-8 shadow-md bg-secondary-color rounded-lg overflow-hidden">
+                <div className="listing-gallery mb-8 shadow-md bg-secondary rounded-lg overflow-hidden">
                     {renderGallery()}
                 </div>
 
@@ -249,8 +249,8 @@ const ListingDetailPage = () => {
                         <div className="listing-info listing-description bg-white p-6 rounded-md shadow-sm border border-border-color">
                             <h2 className="font-secondary text-2xl font-semibold mb-4 pb-2 border-b border-border-color text-text-dark">About this Apartment</h2>
                             <p className="mb-3 text-base">
-                                <strong className="font-semibold"><FontAwesomeIcon icon={faRulerCombined} className="mr-1 text-primary-color" /> {listing.size} m²</strong>  |  
-                                <strong className="font-semibold"><FontAwesomeIcon icon={faDoorOpen} className="mr-1 text-primary-color" /> {listing.rooms} room(s)</strong>
+                                <strong className="font-semibold"><FontAwesomeIcon icon={faRulerCombined} className="mr-1 text-primary" /> {listing.size} m&sup2;</strong>  |  
+                                <strong className="font-semibold"><FontAwesomeIcon icon={faDoorOpen} className="mr-1 text-primary" /> {listing.rooms} room(s)</strong>
                             </p>
                             <p className="text-text-dark leading-relaxed">{listing.description}</p>
                         </div>
@@ -259,14 +259,14 @@ const ListingDetailPage = () => {
                             <h2 className="font-secondary text-2xl font-semibold mb-4 pb-2 border-b border-border-color text-text-dark">Amenities</h2>
                             <ul className="amenities-list grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3">
                                 {listing.amenities.map((amenity, index) => (
-                                    <li key={index} className="flex items-center text-sm p-2 bg-secondary-color rounded border border-border-color">
-                                        <FontAwesomeIcon icon={amenity.icon} className="text-primary-color mr-3 w-5 text-center" /> {amenity.name}
+                                    <li key={index} className="flex items-center text-sm p-2 bg-secondary rounded border border-border-color">
+                                        <FontAwesomeIcon icon={amenity.icon} className="text-primary mr-3 w-5 text-center" /> {amenity.name}
                                     </li>
                                 ))}
                             </ul>
                         </div>
                         
-                        <div className="map-placeholder h-72 bg-secondary-color rounded-md flex flex-col items-center justify-center text-text-light text-center border border-border-color shadow-sm">
+                        <div className="map-placeholder h-72 bg-secondary rounded-md flex flex-col items-center justify-center text-text-light text-center border border-border-color shadow-sm">
                             <FontAwesomeIcon icon={faMapMarkedAlt} size="3x" className="mb-3" />
                             <p className="text-xl">Map Area (Placeholder)</p>
                             <p className="text-sm"><small>Interactive map coming soon!</small></p>
@@ -276,29 +276,29 @@ const ListingDetailPage = () => {
                     <aside className="listing-sidebar lg:col-span-1">
                         <div className="sticky top-24 space-y-6">
                             <div className="price-summary-box bg-white p-6 rounded-md shadow-md border border-border-color">
-                                <div className="advertised-rent text-3xl font-bold text-text-dark mb-1">€{listing.advertisedRent.toLocaleString('nl-NL')} <span className="text-base font-normal text-text-light">/month</span></div>
+                                <div className="advertised-rent text-3xl font-bold text-text-dark mb-1">&#8364;{listing.advertisedRent.toLocaleString('nl-NL')} <span className="text-base font-normal text-text-light">/month</span></div>
                                 <div className="max-legal-rent text-base mb-3">
-                                    Max Legal Rent (WWS): <strong className="text-accent-color font-bold">€{listing.maxLegalRent.toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+                                    Max Legal Rent (WWS): <strong className="text-accent font-bold">&#8364;{listing.maxLegalRent.toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
                                 </div>
-                                <div className={`rent-comparison-detail font-semibold text-sm p-3 rounded text-center border ${comparisonClass === 'fair' ? 'bg-green-100 text-accent-color border-accent-color' : comparisonClass === 'overpriced' ? 'bg-red-100 text-error-color border-error-color' : 'bg-gray-100 text-text-light border-border-color'}`}>
+                                <div className={`rent-comparison-detail font-semibold text-sm p-3 rounded text-center border ${comparisonClass === 'fair' ? 'bg-green-100 text-accent border-accent' : comparisonClass === 'overpriced' ? 'bg-red-100 text-error border-error' : 'bg-gray-100 text-text-light border-border-color'}`}>
                                     {comparisonText}
                                 </div>
                             </div>
 
                             <div className="wws-details bg-white p-6 rounded-md shadow-md border border-border-color">
                                 <h2 className="font-secondary text-xl font-semibold mb-3 pb-2 border-b border-border-color text-text-dark">WWS Points Breakdown</h2>
-                                <div className="wws-points-total text-xl font-bold text-primary-color text-center mb-4 p-2 bg-secondary-color rounded">
+                                <div className="wws-points-total text-xl font-bold text-primary text-center mb-4 p-2 bg-secondary rounded">
                                     {listing.wwsPoints} <span className="block text-sm font-medium text-text-dark">Total WWS Points</span>
                                 </div>
                                 <ul className="wws-breakdown-list space-y-2 text-sm">
                                     {listing.wwsBreakdown.map((item, index) => (
                                         <li key={index} className="flex justify-between pb-1 border-b border-dashed border-border-color last:border-b-0">
                                             <span>{item.item}</span>
-                                            <span className="points font-semibold text-primary-color">{item.points} pts</span>
+                                            <span className="points font-semibold text-primary">{item.points} pts</span>
                                         </li>
                                     ))}
                                 </ul>
-                                <Link to="/about-wws" className="wws-explanation-link block text-right mt-4 text-sm text-primary-color hover:underline font-medium">
+                                <Link to="/about-wws" className="wws-explanation-link block text-right mt-4 text-sm text-primary hover:underline font-medium">
                                     How is this calculated? <FontAwesomeIcon icon={faInfoCircle} />
                                 </Link>
                             </div>
@@ -310,11 +310,11 @@ const ListingDetailPage = () => {
                                     id="contactListerBtn" 
                                     onClick={handleContactLister}
                                     disabled={contactButtonDisabled}
-                                    className={`w-full py-3 px-4 bg-accent-color text-white rounded-md text-lg font-semibold cursor-pointer transition-colors duration-300 flex items-center justify-center ${contactButtonDisabled ? 'bg-text-light cursor-not-allowed' : 'hover:bg-green-700'}`}
+                                    className={`w-full py-3 px-4 bg-accent text-white-color rounded-md text-lg font-semibold cursor-pointer transition-colors duration-300 flex items-center justify-center ${contactButtonDisabled ? 'bg-text-light cursor-not-allowed' : 'hover:bg-green-700'}`}
                                 >
                                     <FontAwesomeIcon icon={faEnvelope} className="mr-2" /> Contact Lister
                                 </button>
-                                <p id="contactMessage" className={`text-xs text-center mt-3 ${contactButtonDisabled ? 'text-accent-color' : 'text-text-light'}`}>{contactMessage}</p>
+                                <p id="contactMessage" className={`text-xs text-center mt-3 ${contactButtonDisabled ? 'text-accent' : 'text-text-light'}`}>{contactMessage}</p>
                             </div>
                         </div>
                     </aside>

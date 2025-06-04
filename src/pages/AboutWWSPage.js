@@ -20,7 +20,7 @@ const AboutWWSPage = () => {
             title: "How are WWS Points Calculated?",
             paragraphs: ["WWS points are awarded based on a detailed evaluation of the property's characteristics. Key factors include:"],
             listItems: [
-                "<strong>Surface Area (m²):</strong> The size of individual rooms and the total living space.",
+                "<strong>Surface Area (m&sup2;):</strong> The size of individual rooms and the total living space.",
                 "<strong>Energy Efficiency:</strong> The property's energy label (e.g., A++, A, B, C). A better label means more points.",
                 "<strong>Kitchen and Bathroom Quality:</strong> The standard of fixtures, fittings, and appliances.",
                 "<strong>WOZ-value (Property Value):</strong> The official property valuation by the municipality, which reflects the location and market value.",
@@ -35,7 +35,7 @@ const AboutWWSPage = () => {
             paragraphs: [
                 "The WWS is most critical for properties in the <strong>regulated sector</strong>. As of 2024, if a self-contained dwelling has <strong>135 points or fewer</strong> at the start of the tenancy, it generally falls under the regulated sector. The maximum rent calculated via WWS is legally binding. Landlords cannot charge more.",
                 "If a property scores <strong>136 points or more</strong> (the \"liberalization threshold\" for 2024, this may change annually), it typically falls into the <strong>liberalized (free) sector</strong>. In this sector, landlords and tenants have more freedom to agree on the rent price. However, even for liberalized properties, the WWS score provides a valuable benchmark for negotiation and understanding the property's intrinsic value.",
-                "It's important to note that the initial rent price at the start of the contract is crucial. If it's above the liberalization rent threshold (e.g., €879.66 in 2024 for properties liberalized based on points), then the contract is usually considered liberalized, even if the points are slightly lower, provided the initial rent was agreed upon fairly."
+                "It's important to note that the initial rent price at the start of the contract is crucial. If it's above the liberalization rent threshold (e.g., &#8364;879.66 in 2024 for properties liberalized based on points), then the contract is usually considered liberalized, even if the points are slightly lower, provided the initial rent was agreed upon fairly."
             ]
         },
         {
@@ -59,13 +59,13 @@ const AboutWWSPage = () => {
     ];
 
     return (
-        <main className="about-wws-section py-12 bg-white">
+        <main className="about-wws-section py-12 bg-white-color">
             <div className="container max-w-3xl mx-auto px-4">
-                <h1 className="font-secondary text-3xl md:text-4xl font-bold text-primary-color text-center mb-10">Understanding the Dutch Rent Points System (WWS)</h1>
+                <h1 className="font-secondary text-3xl md:text-4xl font-bold text-primary text-center mb-10">Understanding the Dutch Rent Points System (WWS)</h1>
                 
                 {contentSections.map((section, index) => (
-                    <div key={index} className="content-block bg-white p-6 md:p-8 rounded-lg shadow-md mb-8 border border-border-color">
-                        <h2 className="font-secondary text-2xl font-semibold text-text-dark mb-4 pb-2 border-b-2 border-primary-color inline-block">
+                    <div key={index} className="content-block bg-white-color p-6 md:p-8 rounded-lg shadow-md mb-8 border border-border-color">
+                        <h2 className="font-secondary text-2xl font-semibold text-text-dark mb-4 pb-2 border-b-2 border-primary inline-block">
                             {section.title}
                         </h2>
                         {section.paragraphs && section.paragraphs.map((p, pIndex) => (
@@ -75,7 +75,7 @@ const AboutWWSPage = () => {
                             <ul className="list-none p-0 mb-4">
                                 {section.listItems.map((item, itemIndex) => (
                                     <li key={itemIndex} className="relative pl-8 mb-2 text-base text-text-dark leading-relaxed">
-                                        <FontAwesomeIcon icon={faCheckCircle} className="text-accent-color absolute left-0 top-1" />
+                                        <FontAwesomeIcon icon={faCheckCircle} className="text-accent absolute left-0 top-1" />
                                         <span dangerouslySetInnerHTML={{ __html: item }} />
                                     </li>
                                 ))}
@@ -88,7 +88,7 @@ const AboutWWSPage = () => {
                 ))}
 
                 <div className="call-to-action text-center mt-8">
-                    <Link to="/" className="cta-button inline-flex items-center bg-accent-color text-white py-3 px-6 rounded-md text-lg font-semibold transition-colors duration-300 hover:bg-green-700">
+                    <Link to="/" className="cta-button inline-flex items-center bg-accent text-white-color py-3 px-6 rounded-md text-lg font-semibold transition-colors duration-300 hover:bg-green-700">
                         <FontAwesomeIcon icon={faSearch} className="mr-2" /> Start Your Transparent Search
                     </Link>
                 </div>

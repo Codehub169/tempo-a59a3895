@@ -30,6 +30,12 @@ module.exports = {
       borderRadius: {
         DEFAULT: '8px',
         lg: '12px',
+      },
+      gridTemplateColumns: {
+        'gallery_detail_page_layout': 'repeat(3, 1fr)', // Example: 3 columns for gallery
+      },
+      gridTemplateRows: {
+        'gallery_detail_page_layout_rows': 'repeat(2, auto)', // Example: 2 rows for gallery
       }
     },
   },

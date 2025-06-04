@@ -8,20 +8,20 @@ const AboutWWSPage = () => <div className="container mx-auto p-4">AboutWWSPage P
 
 // Placeholder for Header and Footer components
 const Header = () => (
-  <header className="bg-primary-color text-white-color p-4 shadow-md">
+  <header className="bg-primary text-white-color p-4 shadow-md">
     <div className="container mx-auto flex justify-between items-center">
-      <h1 className="text-2xl font-bold font-secondary">RentRight<span className="text-accent-color">NL</span></h1>
+      <h1 className="text-2xl font-bold font-secondary">RentRight<span className="text-accent">NL</span></h1>
       <nav>
         {/* Basic navigation links - will be expanded in Header.js */}
-        <a href="/" className="px-2 hover:text-secondary-color">Home</a>
-        <a href="/about-wws" className="px-2 hover:text-secondary-color">About WWS</a>
+        <a href="/" className="px-2 hover:text-secondary">Home</a>
+        <a href="/about-wws" className="px-2 hover:text-secondary">About WWS</a>
       </nav>
     </div>
   </header>
 );
 
 const Footer = () => (
-  <footer className="bg-text-dark text-secondary-color p-4 text-center mt-8">
+  <footer className="bg-text-dark text-secondary p-4 text-center mt-8">
     <div className="container mx-auto">
       <p>&copy; 2024 RentRightNL. Empowering renters with transparency.</p>
       <p>This is a React application. Styling with Tailwind CSS.</p>
