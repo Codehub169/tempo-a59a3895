@@ -1,36 +1,12 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from typing import List, Optional, Dict, Any
-from pydantic import BaseModel, Field
+from typing import List, Dict, Any, Optional
 import json
 import os
 
-# --- Pydantic Models --- #
-
-class Amenity(BaseModel):
-    name: str
-    icon: str
-
-class WWSBreakdownItem(BaseModel):
-    item: str
-    points: int
-
-class Listing(BaseModel):
-    id: int
-    title: str
-    location: str
-    images: List[str] # URLs to images
-    advertisedRent: float = Field(..., alias='advertisedRent')
-    size: int # in m
-    rooms: int
-    wwsPoints: int = Field(..., alias='wwsPoints')
-    maxLegalRent: float = Field(..., alias='maxLegalRent')
-    description: str
-    amenities: List[Amenity]
-    wwsBreakdown: List[WWSBreakdownItem] = Field(..., alias='wwsBreakdown')
-
-    class Config:
-        populate_by_name = True # Allows using alias for field names
+# Import models from .models and .wws_calculator
+from .models import Listing as PydanticListing, Amenity as PydanticAmenity, WWSInputData, WWSDetails, WWSBreakdownItem as PydanticWWSBreakdownItem # Corrected imports
+from .wws_calculator import get_wws_details # Corrected: WWSDetails and WWSBreakdownItem not imported from here
 
 # --- FastAPI App Initialization --- #
 app = FastAPI(
@@ -40,41 +16,75 @@ app = FastAPI(
 )
 
 # --- CORS Middleware --- #
-# Allows requests from the React frontend (typically on http://localhost:3000 or http://localhost:9000)
 origins = [
     "http://localhost:3000",
     "http://localhost:9000",
-    # Add any other origins if necessary (e.g., deployed frontend URL)
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"], # Allows all methods (GET, POST, etc.)
-    allow_headers=["*"], # Allows all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # --- Mock Database --- #
-# Load mock data from a JSON file or define inline
-# This will be replaced by actual database logic later.
-
-_MOCK_LISTINGS_DB: Dict[int, Listing] = {}
+_MOCK_LISTINGS_DB: Dict[int, PydanticListing] = {}
 
 def load_mock_data():
     global _MOCK_LISTINGS_DB
-    # Path relative to this file's location
     data_file_path = os.path.join(os.path.dirname(__file__), 'data', 'seed_listings.json')
     try:
-        with open(data_file_path, 'r') as f:
-            raw_data = json.load(f)
-            # Convert raw_data (expected to be a list of listing dicts) to Pydantic models
-            # and store them in a dictionary keyed by ID for easy lookup.
-            for listing_dict in raw_data:
-                # Pydantic will handle alias mapping here if aliases are defined in the model
-                listing_obj = Listing(**listing_dict)
+        with open(data_file_path, 'r', encoding='utf-8') as f:
+            raw_listings_data = json.load(f)
+            for listing_data_from_json in raw_listings_data:
+                listing_payload = listing_data_from_json.copy()
+
+                wws_input_data_raw = listing_payload.pop('wws_input_data', {})
+                
+                adapted_wws_input_dict = {
+                    "size_m2": wws_input_data_raw.get("surface_area"),
+                    "rooms": wws_input_data_raw.get("room_count"),
+                    "energy_label": wws_input_data_raw.get("energy_label"),
+                    "woz_value": wws_input_data_raw.get("woz_value"),
+                }
+                
+                wws_points_val: Optional[int] = None
+                max_legal_rent_val: Optional[float] = None
+                wws_breakdown_val: List[PydanticWWSBreakdownItem] = []
+
+                if adapted_wws_input_dict["size_m2"] is not None: 
+                    try:
+                        # WWSInputData expects Pythonic names (e.g. size_m2)
+                        validated_wws_input = WWSInputData(**adapted_wws_input_dict)
+                        # get_wws_details also expects a dict with Pythonic names
+                        wws_details_result: WWSDetails = get_wws_details(validated_wws_input.model_dump())
+                        wws_points_val = wws_details_result.points
+                        max_legal_rent_val = wws_details_result.max_rent
+                        # wws_details_result.breakdown contains PydanticWWSBreakdownItem instances
+                        wws_breakdown_val = wws_details_result.breakdown 
+                    except Exception as e_calc:
+                        print(f"Warning: Could not calculate WWS for listing ID {listing_data_from_json['id']}: {e_calc}")
+                else:
+                    print(f"Warning: Missing 'surface_area' (size_m2) for WWS calculation for listing ID {listing_data_from_json['id']}. Skipping WWS calculation.")
+
+                listing_payload_for_model = {
+                    **listing_payload, 
+                    "wws_points": wws_points_val,
+                    "max_legal_rent": max_legal_rent_val,
+                    "wws_breakdown": wws_breakdown_val,
+                    "amenities": [PydanticAmenity(**a) for a in listing_payload.get('amenities', [])]
+                }
+                
+                # PydanticListing (models.Listing) uses aliases for some fields (e.g. size for size_m2)
+                # It expects Pythonic names for construction if populate_by_name=True is set in Config, 
+                # or aliased names if not. seed_listings.json uses 'advertised_rent' and 'size'.
+                # models.ListingBase has aliases: advertised_rent (alias advertisedRent), size_m2 (alias size).
+                # The payload already contains 'advertised_rent' and 'size' with these keys, which is fine for pydantic.
+                listing_obj = PydanticListing(**listing_payload_for_model)
                 _MOCK_LISTINGS_DB[listing_obj.id] = listing_obj
-        print(f"Successfully loaded {len(_MOCK_LISTINGS_DB)} listings from {data_file_path}")
+        print(f"Successfully loaded and processed {len(_MOCK_LISTINGS_DB)} listings into in-memory DB.")
     except FileNotFoundError:
         print(f"Warning: Mock data file not found at {data_file_path}. API will return empty data.")
         _MOCK_LISTINGS_DB = {}
@@ -91,16 +101,14 @@ async def startup_event():
 
 # --- API Endpoints --- #
 
-@app.get("/api/listings", response_model=List[Listing])
+@app.get("/api/listings", response_model=List[PydanticListing], response_model_by_alias=True)
 async def get_all_listings():
     """Retrieve all available apartment listings."""
     if not _MOCK_LISTINGS_DB:
-        # This could happen if seed_listings.json is missing or empty
-        # Depending on requirements, could return an error or empty list
         return [] 
     return list(_MOCK_LISTINGS_DB.values())
 
-@app.get("/api/listings/{listing_id}", response_model=Listing)
+@app.get("/api/listings/{listing_id}", response_model=PydanticListing, response_model_by_alias=True)
 async def get_listing_by_id(listing_id: int):
     """Retrieve a specific apartment listing by its ID."""
     listing = _MOCK_LISTINGS_DB.get(listing_id)
@@ -112,6 +120,3 @@ async def get_listing_by_id(listing_id: int):
 @app.get("/")
 async def read_root():
     return {"message": "Welcome to the RentRightNL API. Visit /docs for API documentation."}
-
-# To run the app (from the project root directory, assuming backend folder is at the same level as startup.sh):
-# uvicorn backend.main:app --reload --port 8000

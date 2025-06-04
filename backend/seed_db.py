@@ -2,9 +2,9 @@ import json
 import os
 from sqlalchemy.orm import Session
 
-from backend.database import SessionLocal, engine, create_db_and_tables, ListingORM, AmenityORM, WWSBreakdownItemORM
-from backend.models import WWSInputData, WWSDetails # Assuming WWSDetails is the return type of get_wws_details
-from backend.wws_calculator import get_wws_details
+from .database import SessionLocal, engine, create_db_and_tables, ListingORM, AmenityORM, WWSBreakdownItemORM
+from .models import WWSInputData, WWSDetails, WWSBreakdownItem # Corrected: WWSDetails and WWSBreakdownItem are from .models
+from .wws_calculator import get_wws_details # Corrected: WWSDetails is not imported from here
 
 # Determine the correct path to the JSON file relative to this script
 # This script is in backend/, data is in backend/data/
@@ -27,19 +27,29 @@ def seed_database():
         print("Existing data cleared.")
 
         print(f"Loading seed data from: {SEED_DATA_PATH}")
-        with open(SEED_DATA_PATH, 'r') as f:
+        with open(SEED_DATA_PATH, 'r', encoding='utf-8') as f:
             listings_data = json.load(f)
         print(f"Loaded {len(listings_data)} listings from JSON.")
 
         for listing_data in listings_data:
             print(f"Processing listing ID: {listing_data['id']}")
-            # Validate and parse wws_input_data
-            # The get_wws_details function in wws_calculator.py expects a dict, not a Pydantic model instance
+            
             raw_wws_inputs = listing_data['wws_input_data']
             
-            # Call WWS calculator
-            # Ensure get_wws_details returns an object with points, max_rent, and breakdown attributes
-            wws_results: WWSDetails = get_wws_details(raw_wws_inputs)
+            # Adapt raw_wws_inputs from JSON to WWSInputData model structure
+            adapted_wws_input_dict = {
+                "size_m2": raw_wws_inputs.get("surface_area"),
+                "rooms": raw_wws_inputs.get("room_count"),
+                "energy_label": raw_wws_inputs.get("energy_label"),
+                "woz_value": raw_wws_inputs.get("woz_value"),
+            }
+            # Validate with Pydantic model before passing to calculator
+            # This ensures data types are correct before calculator uses them.
+            validated_wws_input = WWSInputData(**adapted_wws_input_dict)
+
+            # Pass the dictionary representation of validated inputs to the calculator
+            # get_wws_details expects a dict and will parse it internally with WWSInputData
+            wws_results: WWSDetails = get_wws_details(validated_wws_input.model_dump()) 
 
             db_listing = ListingORM(
                 id=listing_data['id'],
@@ -47,12 +57,14 @@ def seed_database():
                 location=listing_data['location'],
                 images=listing_data['images'], # Stored as JSON
                 advertised_rent=listing_data['advertised_rent'],
-                size=listing_data['size'],
+                size_m2=listing_data['size'], # JSON 'size' maps to ORM 'size_m2'
                 rooms=listing_data['rooms'],
                 description=listing_data['description'],
                 wws_points=wws_results.points,
                 max_legal_rent=wws_results.max_rent,
-                raw_wws_inputs=raw_wws_inputs # Stored as JSON
+                raw_wws_inputs=raw_wws_inputs, # Stored as JSON
+                energy_label=validated_wws_input.energy_label, 
+                woz_value=validated_wws_input.woz_value 
             )
 
             for amenity_data in listing_data.get('amenities', []):
@@ -64,13 +76,14 @@ def seed_database():
                 db_listing.amenities.append(db_amenity)
             
             if wws_results.breakdown:
-                for item_data in wws_results.breakdown:
+                # wws_results.breakdown contains Pydantic WWSBreakdownItem models
+                for item_data_pydantic in wws_results.breakdown: 
                     db_breakdown_item = WWSBreakdownItemORM(
-                        item=item_data.item,
-                        points=item_data.points,
+                        item=item_data_pydantic.item,
+                        points=item_data_pydantic.points,
                         listing_id=db_listing.id
                     )
-                    db_listing.wws_breakdown_items.append(db_breakdown_item)
+                    db_listing.wws_breakdown.append(db_breakdown_item)
             
             db.add(db_listing)
         

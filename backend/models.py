@@ -17,7 +17,7 @@ class ListingBase(BaseModel):
     location: str
     images: List[str] = []
     advertised_rent: float = Field(..., alias="advertisedRent")
-    size_m2: float = Field(..., alias="size") # Renamed from 'size' to 'size_m2' for clarity, alias for frontend
+    size_m2: float = Field(..., alias="size") # Renamed from 'size' to 'size_m2' for clarity, alias for frontend 'size'
     rooms: int
     description: str
     # Raw data for WWS calculation - these would ideally be stored and used by the calculator
@@ -52,3 +52,8 @@ class WWSInputData(BaseModel):
     # bathroom_luxury_level: Optional[int] = Field(1, ge=1, le=5) # 1-5 scale
     # has_balcony: Optional[bool] = False
     # balcony_size_m2: Optional[float] = 0.0
+
+class WWSDetails(BaseModel):
+    points: int
+    max_rent: float
+    breakdown: List[WWSBreakdownItem]
