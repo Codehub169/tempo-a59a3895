@@ -1,8 +1,12 @@
 import axios from 'axios';
 
 // Determine the base URL based on the environment
-// For development, React typically runs on port 3000 and the backend on 9000 (as configured in startup.sh).
-// For production, both might be served from the same origin or a configured API URL.
+// For development (npm start), React runs on port 3000 and the backend on 9000.
+// For production-like serving (via startup.sh after npm run build), both are on port 9000.
+// REACT_APP_API_URL can override this.
+// The default 'http://localhost:9000/api' ensures 'npm start' works without a proxy,
+// aligning with backend CORS settings. For 'npm run build' served by FastAPI,
+// REACT_APP_API_URL could be set to '/api' or this default will also work.
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:9000/api';
 
 /**
@@ -28,7 +32,7 @@ export const getListings = async () => {
  * @returns {Promise<Object>} A promise that resolves to a single listing object.
  */
 export const getListingById = async (id) => {
-  if (!id) {
+  if (!id && id !== 0) { // Allow ID 0 if it's a valid identifier
     console.error('Error: Listing ID is required.');
     throw new Error('Listing ID is required.');
   }

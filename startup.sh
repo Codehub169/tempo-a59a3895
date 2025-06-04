@@ -47,22 +47,25 @@ cd "$SCRIPT_DIR" # Back to project root
 # --- Frontend Setup ---
 echo "
 [2/4] Setting up frontend..."
-# package.json is located in the project root ($SCRIPT_DIR)
-# The previous 'cd "$SCRIPT_DIR"' ensures we are in the correct directory.
+# Ensure we are in the project root where package.json is located.
+cd "$SCRIPT_DIR"
 
+# If node_modules exists, it might be from a volume mount or a previous Docker layer
+# and could have issues (e.g., platform incompatibility, corruption, incorrect permissions).
+# Forcing a clean install within the container is often safer to resolve such issues.
 if [ -d "node_modules" ]; then
-  echo "Frontend dependencies (node_modules) already exist. Skipping npm install."
-else
-  echo "Installing frontend dependencies (npm install)..."
-  npm install
-  echo "Frontend dependencies installed."
+  echo "Found existing node_modules directory. Removing for a clean install."
+  rm -rf node_modules
 fi
+
+echo "Installing frontend dependencies (npm install)..."
+npm install
+echo "Frontend dependencies installed."
 
 # Build the frontend
 echo "Building frontend application (npm run build)..."
 npm run build
 echo "Frontend application built."
-# cd "$SCRIPT_DIR" # Already in SCRIPT_DIR, not strictly necessary but ensures CWD
 
 # --- Final Checks (Placeholder) ---
 echo "
@@ -76,6 +79,7 @@ echo "
 cd "$SCRIPT_DIR/backend"
 
 # Activate venv again before running uvicorn (though it should still be active in this shell)
+# This is a good practice if any prior steps might have deactivated it or run in a different subshell context.
 # shellcheck disable=SC1091
 source venv/bin/activate
 
@@ -85,6 +89,7 @@ source venv/bin/activate
 echo "Starting FastAPI server on http://0.0.0.0:9000"
 echo "The application should be accessible at http://localhost:9000"
 
+# Using --reload for development. For production, consider removing --reload and using a process manager.
 uvicorn main:app --host 0.0.0.0 --port 9000 --reload
 
 # Deactivate virtual environment on exit (though script might be terminated before this)
